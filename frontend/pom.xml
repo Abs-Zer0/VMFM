@@ -9,10 +9,10 @@
     </parent>
 
     <groupId>lii.vmfm</groupId>
-	<artifactId>frontend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>vmfm-frontend</name>
-	<description>VMFM frontend project (vue.js + Vuetify)</description>
+    <artifactId>frontend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>vmfm-frontend</name>
+    <description>VMFM frontend project (vue.js + Vuetify)</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -59,6 +59,29 @@
                         </goals>
                         <configuration>
                             <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>remove-public</id>
+                        <!-- 'initialize' is the phase before 'generate-sources' use 'verify' to execute it before 'install' -->
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>src/main/resources/public</directory>
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                </fileset>
+                            </filesets>
                         </configuration>
                     </execution>
                 </executions>
