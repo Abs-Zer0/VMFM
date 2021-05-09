@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="shared :: head-vue-style" />
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <div th:replace="shared :: body-vue-appbar" />
+            <v-main>
+                <v-container fluid>Hello world</v-container>
+            </v-main>
+        </v-app>
+    </div>
+
+    <div th:replace="shared :: body-vue-script" />
+</body>
+
+</html>
