@@ -11,18 +11,28 @@
         <v-app>
             <div th:replace="shared :: body-vue-appbar" />
             <v-main>
-                <v-container fluid>
-                    <v-form>
-                        <v-text-field name="username" label="Enter your username" v-model="username"
-                            hint="At least 4 characters" min="4" :counter="50"
-                            :rules="[rules.required, rules.minUsername, rules.max]">
-                        </v-text-field>
-                        <v-text-field name="passwd" label="Enter your password" v-model="passwd"
-                            hint="At least 8 characters" min="8" counter="50"
-                            :append-icon="passwdShow ? 'mdi-eye' : 'mdi-eye-off'" 
-                            :rules="[rules.required, rules.minPassword, rules.max]"
-                            :type="!passwdShow ? 'password' : 'text'" @click:append="passwdShow = !passwdShow"></v-text-field>
-                    </v-form>
+                <v-container class="pa-auto">
+                    <v-card class="pa-5" ref="form">
+                        <v-card-title>Авторизация</v-card-title>
+                        <v-divider class="my-6"></v-divider>
+                        <v-card-text>
+                            <v-text-field name="username" label="Введите имя пользователя" ref="username"
+                                v-model="username" hint="Как минимум 4 символа" min="4" :counter="50"
+                                :rules="rules.username">
+                            </v-text-field>
+                            <v-text-field name="passwd" label="Введите пароль" ref="passwd" v-model="passwd"
+                                hint="Как минимум 8 символов" min="8" counter="50"
+                                :append-icon="passwdShow ? 'mdi-eye' : 'mdi-eye-off'" :rules="rules.password"
+                                :type="!passwdShow ? 'password' : 'text'" @click:append="passwdShow = !passwdShow">
+                            </v-text-field>
+                        </v-card-text>
+                        <v-divider class="my-6"></v-divider>
+                        <v-card-actions>
+                            <v-btn href="/">Домашняя страница</v-btn>
+                            <v-spacer></v-spacer>
+                            <v-btn color="primary" @click="submit">Войти</v-btn>
+                        </v-card-actions>
+                    </v-card>
                 </v-container>
             </v-main>
         </v-app>
@@ -39,10 +49,39 @@
                     passwd: null,
                     passwdShow: false,
                     rules: {
-                        required: (val) => !!val || 'Required',
-                        minUsername: (val) => val.length >= 4 || 'Min 4 characters',
-                        minPassword: (val) => val.length >= 8 || 'Min 8 characters',
-                        max: (val) => val.length <= 50 || 'Max 50 characters'
+                        username: [
+                            (val) => (val || '').length > 0 || 'Необходимое поле',
+                            (val) => (val || '').length >= 4 || 'Минимум 4 символа',
+                            (val) => (val || '').length <= 50 || 'Максимум 50 символов'
+                        ],
+                        password: [
+                            (val) => (val || '').length > 0 || 'Необходимое поле',
+                            (val) => (val || '').length >= 8 || 'Минимум 8 символов',
+                            (val) => (val || '').length <= 50 || 'Максимум 50 символов'
+                        ]
+                    },
+                    hasError: false
+                }
+            },
+            computed: {
+                form() {
+                    return {
+                        username: this.username,
+                        passwd: this.passwd
+                    }
+                }
+            },
+            methods: {
+                submit() {
+                    this.hasError = false
+
+                    Object.keys(this.form).forEach(f => {
+                        if (!this.form[f]) this.hasError = true
+
+                        this.$refs[f].validate(true)
+                    })
+
+                    if (!this.hasError) {
 
                     }
                 }
