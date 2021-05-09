@@ -1,4 +1,4 @@
-package lii.vmfm.backend
+package ru.lii.vmfm
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
