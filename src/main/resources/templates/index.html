@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
+    <title>VMFM</title>
     <div th:replace="shared :: head-vue-style" />
 </head>
 
@@ -16,6 +17,12 @@
     </div>
 
     <div th:replace="shared :: body-vue-script" />
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+        })
+    </script>
 </body>
 
 </html>
