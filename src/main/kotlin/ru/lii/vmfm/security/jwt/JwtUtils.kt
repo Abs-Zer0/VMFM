@@ -13,9 +13,9 @@ import ru.lii.vmfm.security.service.UserDetailsImpl
 public class JwtUtils {
     val logger: Logger = LoggerFactory.getLogger(JwtUtils::class.java.name)
 
-    @Value("${vmfm.jwtSecret}") var jwtSecret: String? = null
+    @Value("\${vmfm.jwtSecret}") lateinit var jwtSecret: String
 
-    @Value("${vmfm.jwtExpirationMs}") var jwtExpirationMs: Int = 86400000
+    @Value("\${vmfm.jwtExpirationMs}") lateinit var jwtExpirationMs: String
 
     fun generateJwtToken(authentication: Authentication): String {
 
@@ -24,7 +24,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(Date())
-                .setExpiration(Date((Date()).getTime() + jwtExpirationMs))
+                .setExpiration(Date((Date()).getTime() + jwtExpirationMs.toInt()))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact()
     }

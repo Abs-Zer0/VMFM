@@ -6,17 +6,17 @@ import org.springframework.security.core.userdetails.UserDetails
 
 public data class UserDetailsImpl(
         var id: Long? = null,
-        var username: String? = null,
+        var uname: String? = null,
         var email: String? = null,
-        @JsonIgnore var password: String? = null,
-        var authorities: Collection<GrantedAuthority>? = null
+        @JsonIgnore var passwd: String? = null,
+        var auths: Collection<GrantedAuthority>? = null
 ) : UserDetails {
 
-    override fun getAuthorities(): Collection<GrantedAuthority>? = this.authorities
+    override fun getAuthorities(): Collection<GrantedAuthority>? = this.auths
 
-    override fun getPassword(): String? = this.password
+    override fun getPassword(): String? = this.passwd
 
-    override fun getUsername(): String? = this.username
+    override fun getUsername(): String? = this.uname
 
     override fun isAccountNonExpired(): Boolean = true
 

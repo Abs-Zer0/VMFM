@@ -29,21 +29,25 @@ public class AuthTokenFilter() : OncePerRequestFilter() {
             response: HttpServletResponse,
             filterChain: FilterChain
     ) {
-        try {
-            val jwt: String? = parseJwt(request)
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                val username: String = jwtUtils.getUserNameFromJwtToken(jwt)
+        if (!Regex("^/(home|auth.*)?", RegexOption.IGNORE_CASE).matches(request.servletPath)) {
+            try {
+                val jwt: String? = parseJwt(request)
 
-                val userDetails: UserDetails = userDetailsService.loadUserByUsername(username)
-                val authentication: UsernamePasswordAuthenticationToken =
-                        UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities())
-                authentication.setDetails(WebAuthenticationDetailsSource().buildDetails(request))
+                if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+                    val username: String = jwtUtils.getUserNameFromJwtToken(jwt)
 
-                SecurityContextHolder.getContext().setAuthentication(authentication)
+                    val userDetails: UserDetails = userDetailsService.loadUserByUsername(username)
+                    val authentication: UsernamePasswordAuthenticationToken =
+                            UsernamePasswordAuthenticationToken(
+                                    userDetails, null, userDetails.getAuthorities())
+                    authentication.setDetails(
+                            WebAuthenticationDetailsSource().buildDetails(request))
+
+                    SecurityContextHolder.getContext().setAuthentication(authentication)
+                }
+            } catch (e: Exception) {
+                response.sendError(500, "Ошибка в заголовке аутентификации")
             }
-        } catch (e: Exception) {
-            logger.error("Cannot set user authentication: {}", e)
         }
 
         filterChain.doFilter(request, response)

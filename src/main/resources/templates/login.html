@@ -16,8 +16,8 @@
                             <v-card-title>Авторизация</v-card-title>
                             <v-divider class="my-6"></v-divider>
                             <v-card-text>
-                                <v-text-field name="username" label="Введите имя пользователя"
-                                    ref="username" v-model="username" hint="Как минимум 4 символа" min="4" :counter="50"
+                                <v-text-field name="username" label="Введите имя пользователя или эл. почту"
+                                    ref="usernameOrEmail" v-model="username" hint="Как минимум 4 символа" min="4" :counter="50"
                                     :rules="rules.username">
                                 </v-text-field>
                                 <v-text-field name="password" label="Введите пароль" ref="password"
@@ -66,7 +66,7 @@
             computed: {
                 form() {
                     return {
-                        username: this.username,
+                        usernameOrEmail: this.username,
                         password: this.password
                     }
                 }

@@ -61,19 +61,16 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    fun getLogin():String{
+    fun getLogin(): String {
         return "login"
     }
 
     @PostMapping("/login")
-    fun postLogin(@Valid @RequestBody body: LoginResponse):ResponseEntity<*>{
-
+    fun postLogin(@Valid @RequestBody body: LoginRequest): ResponseEntity<*> {
+        return ResponseEntity.ok(RegResponse("qwertyuiopasdfghjklzxcvbnm"))
     }
 
-    @Throws(Exception::class)
-    private fun validFields(user:User){
-        
-    }
+    @Throws(Exception::class) private fun validFields(user: User) {}
 
     private fun generateJwt(user: User): String {
         val authentication: Authentication =

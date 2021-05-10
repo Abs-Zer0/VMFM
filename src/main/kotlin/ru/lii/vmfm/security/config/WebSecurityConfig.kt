@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.http.HttpMethod
 import ru.lii.vmfm.security.jwt.AuthEntryPointJwt
 import ru.lii.vmfm.security.jwt.AuthTokenFilter
 import ru.lii.vmfm.security.service.UserDetailsServiceImpl
@@ -53,23 +54,22 @@ public class WebSecurityConfig() : WebSecurityConfigurerAdapter() {
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        http.cors()
-                .and()
-                .csrf()
-                .disable()
-                .exceptionHandling()
+        http
+            .cors().and().csrf().disable()
+            .exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler)
-                .and()
+            .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+            .and()
                 .authorizeRequests()
-                .antMatchers("/api/auth/**")
-                .permitAll()
-                .antMatchers("/api/test/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
+                .antMatchers("/*.*").permitAll()
+                .antMatchers(HttpMethod.GET, "/", "/home").permitAll()
+                .antMatchers(HttpMethod.POST, "/", "/home").permitAll()
+                .antMatchers(HttpMethod.GET, "/auth/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                .antMatchers("/test/**").permitAll()
+                .anyRequest().authenticated()
 
         http.addFilterBefore(
                 authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter::class.java)
