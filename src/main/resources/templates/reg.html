@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>VMFM - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <form class="form-signin" method="POST" action="#" th:action="@{/reg}" th:object="${user}">
+            <h2 class="form-signin-heading">Форма регистрации</h2>
+            <p>
+                <label class="sr-only">Имя пользователя</label>
+                <input class="form-control" type="text" th:field="*{username}" th:value="*{username}"
+                    placeholder="Имя пользователя" required autofocus />
+            </p>
+            <p>
+                <label class="sr-only">Email</label>
+                <input class="form-control" type="text" th:field="*{email}" th:value="*{email}" placeholder="Email"
+                    required />
+            </p>
+            <p>
+                <label class="sr-only">Пароль</label>
+                <input class="form-control" type="password" th:field="*{password}" th:value="*{password}"
+                    placeholder="Пароль" required />
+            </p>
+            <p>
+                <label class="sr-only">Повторить пароль</label>
+                <input class="form-control" type="password" th:field="*{confirmPassword}" th:value="*{confirmPassword}"
+                    placeholder="Повторить пароль" required />
+            </p>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Зарегистрироваться</button>
+        </form>
+    </div>
+</body>
+
+</html>

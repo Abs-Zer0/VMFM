@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>VMFM - Projects</title>
+    <div th:replace="shared :: head-vue-style" />
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <div th:replace="shared :: body-vue-appbar" />
+            <div th:replace="shared :: body-vue-navbar" />
+            <v-main>
+                <v-container fluid>Hello world projs</v-container>
+            </v-main>
+        </v-app>
+    </div>
+
+    <div th:replace="shared :: body-vue-script" />
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+        })
+    </script>
+</body>
+
+</html>
