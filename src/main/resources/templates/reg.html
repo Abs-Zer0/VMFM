@@ -2,40 +2,101 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>VMFM - Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous">
+    <title>VMFM - Registration</title>
+    <div th:replace="shared :: head-vue-style" />
 </head>
 
 <body>
-    <div class="container">
-        <form class="form-signin" method="POST" action="#" th:action="@{/reg}" th:object="${user}">
-            <h2 class="form-signin-heading">Форма регистрации</h2>
-            <p>
-                <label class="sr-only">Имя пользователя</label>
-                <input class="form-control" type="text" th:field="*{username}" th:value="*{username}"
-                    placeholder="Имя пользователя" required autofocus />
-            </p>
-            <p>
-                <label class="sr-only">Email</label>
-                <input class="form-control" type="text" th:field="*{email}" th:value="*{email}" placeholder="Email"
-                    required />
-            </p>
-            <p>
-                <label class="sr-only">Пароль</label>
-                <input class="form-control" type="password" th:field="*{password}" th:value="*{password}"
-                    placeholder="Пароль" required />
-            </p>
-            <p>
-                <label class="sr-only">Повторить пароль</label>
-                <input class="form-control" type="password" th:field="*{confirmPassword}" th:value="*{confirmPassword}"
-                    placeholder="Повторить пароль" required />
-            </p>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Зарегистрироваться</button>
-        </form>
+    <div id="app">
+        <v-app>
+            <div th:replace="shared :: body-vue-appbar" />
+            <v-main>
+                <v-container class="pa-auto">
+                    <v-form th:action="@{/auth/reg}" th:object="${user}" method="POST" v-model="valid"
+                        :lazy-validation="lazy">
+                        <v-card class="pa-5">
+                            <v-card-title>Регистрация</v-card-title>
+                            <v-divider class="my-6"></v-divider>
+                            <div th:if="${error}">
+                                <v-alert text type="error" th:text="${error}"></v-alert>
+                                <v-divider class="my-6"></v-divider>
+                            </div>
+                            <v-card-text>
+                                <v-text-field label="Введите имя пользователя" v-model="username"
+                                    hint="Как минимум 4 символа" min="4" :counter="50" :rules="rules.username">
+                                </v-text-field>
+                                <input th:field="*{username}" th:value="*{username}" type="hidden" v-model="username">
+
+                                <v-text-field label="Введите эл. почту" v-model="email" :rules="rules.email">
+                                </v-text-field>
+                                <input th:field="*{email}" th:value="*{email}" type="hidden" v-model="email">
+
+                                <v-text-field label="Введите пароль" v-model="password" hint="Как минимум 8 символов"
+                                    min="8" counter="50" :append-icon="passwdShow ? 'mdi-eye' : 'mdi-eye-off'"
+                                    :rules="rules.password" :type="!passwdShow ? 'password' : 'text'"
+                                    @click:append="passwdShow = !passwdShow">
+                                </v-text-field>
+                                <input th:field="*{password}" th:value="*{password}" type="hidden" v-model="password">
+
+                                <v-text-field label="Повторите пароль" v-model="confirmPassword"
+                                    hint="Как минимум 8 символов" min="8" counter="50"
+                                    :append-icon="passwdShow ? 'mdi-eye' : 'mdi-eye-off'" :rules="rules.confirmPassword"
+                                    :type="!passwdShow ? 'password' : 'text'" @click:append="passwdShow = !passwdShow">
+                                </v-text-field>
+                                <input th:field="*{confirmPassword}" th:value="*{confirmPassword}" type="hidden" v-model="confirmPassword">
+                            </v-card-text>
+                            <v-divider class="my-6"></v-divider>
+                            <v-card-actions>
+                                <v-btn href="/">Домашняя страница</v-btn>
+                                <v-spacer></v-spacer>
+                                <v-btn color="primary" :disabled="!valid" type="submit">Отправить</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-form>
+                </v-container>
+            </v-main>
+        </v-app>
     </div>
+
+    <div th:replace="shared :: body-vue-script" />
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+            data() {
+                return {
+                    valid: true,
+                    lazy: false,
+                    username: null,
+                    email: null,
+                    password: null,
+                    confirmPassword: null,
+                    passwdShow: false,
+                    rules: {
+                        username: [
+                            (val) => (val || '').length > 0 || 'Необходимое поле',
+                            (val) => (val || '').length >= 4 || 'Минимум 4 символа',
+                            (val) => (val || '').length <= 50 || 'Максимум 50 символов'
+                        ],
+                        email: [
+                            (val) => (val || '').length > 0 || 'Необходимое поле'
+                        ],
+                        password: [
+                            (val) => (val || '').length > 0 || 'Необходимое поле',
+                            (val) => (val || '').length >= 8 || 'Минимум 8 символов',
+                            (val) => (val || '').length <= 50 || 'Максимум 50 символов'
+                        ],
+                        confirmPassword: [
+                            (val) => (val || '').length > 0 || 'Необходимое поле',
+                            (val) => (val || '').length >= 8 || 'Минимум 8 символов',
+                            (val) => (val || '').length <= 50 || 'Максимум 50 символов',
+                            (val) => (val || '') == this.password || 'Пароли должны совпадать'
+                        ]
+                    },
+                }
+            },
+        })
+    </script>
 </body>
 
 </html>

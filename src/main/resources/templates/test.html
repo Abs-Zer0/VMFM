@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>VMFM - Login</title>
+    <div th:replace="shared :: head-vue-style" />
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <div th:replace="shared :: body-vue-appbar" />
+            <v-main>
+                <v-row align="center">
+                    <v-form th:action="@{/login}" th:object="${user}" method="POST" ref="form" v-model="valid" :lazy-validation="lazy">
+                        <v-text-field v-model="username" :counter="10" :rules="nameRules" label="Name" required>
+                        </v-text-field>
+                        <input th:field="*{username}" type="hidden" v-model="username">
+
+                        <v-text-field v-model="password" label="Password" required></v-text-field>
+
+                        <v-btn :disabled="!valid" color="success" class="mr-4" type="submit">
+                            Validate
+                        </v-btn>
+                    </v-form>
+                    <!--<form th:action="@{/login}" th:object="${user}" method="POST" style="margin-top: 500px;">
+                        <input th:field="*{id}" type="number" value="0">
+                        <input th:field="*{username}" type="text" placeholder="User">
+                        <input th:field="*{password}" type="text" placeholder="Password">
+                        <button type="submit">Submit</button>
+                    </form>-->
+                </v-row>
+            </v-main>
+        </v-app>
+    </div>
+
+    <div th:replace="shared :: body-vue-script" />
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+            data: () => ({
+                valid: true,
+                username: '',
+                nameRules: [
+                    v => !!v || 'Name is required',
+                    v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+                ],
+                password: '',
+                lazy: false
+            }),
+            methods: {
+                submit() {
+                    axios.post("/login", { "username": this.username, "password": this.password })
+                        .then(res => console.log(res))
+                        .catch(ex => console.log(ex))
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

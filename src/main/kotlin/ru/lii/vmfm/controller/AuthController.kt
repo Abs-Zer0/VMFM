@@ -3,81 +3,73 @@ package ru.lii.vmfm.controller
 import java.util.Optional
 import javax.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.ResponseEntity
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.http.MediaType
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import ru.lii.vmfm.db.model.*
 import ru.lii.vmfm.db.repository.*
 import ru.lii.vmfm.http.request.*
 import ru.lii.vmfm.http.response.*
-import ru.lii.vmfm.security.jwt.JwtUtils
 
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-    @Autowired lateinit var authenticationManager: AuthenticationManager
-
     @Autowired lateinit var userRepository: UserRepository
 
     @Autowired lateinit var roleRepository: RoleRepository
 
     @Autowired lateinit var encoder: PasswordEncoder
 
-    @Autowired lateinit var jwtUtils: JwtUtils
-
     @GetMapping("reg")
-    fun getReg(): String {
+    fun getReg(model: Model): String {
+        model.addAttribute("user", RegRequest("", "", "", ""))
+
         return "reg"
     }
 
     @PostMapping("reg")
-    fun postReg(@Valid @RequestBody body: RegRequest): ResponseEntity<*> {
+    fun postReg(@Valid /*@RequestBody*/ body: RegRequest, model: Model): String {
+        if (body.password != body.confirmPassword) {
+            model.addAttribute("error", "Пароли должны совпадать")
+            model.addAttribute("user", body)
+
+            return "reg"
+        }
+
         if (userRepository.existsByUsername(body.username)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorResponse("Пользователь с именем '$body.username' уже существует"))
+            model.addAttribute("error", "Пользователь с именем '$body.username' уже существует")
+            model.addAttribute("user", body)
+
+            return "reg"
         }
 
         if (userRepository.existsByEmail(body.email)) {
-            return ResponseEntity.badRequest()
-                    .body(ErrorResponse("Пользователь с эл.почтой '$body.email' уже существует"))
+            model.addAttribute("error", "Пользователь с эл.почтой '$body.email' уже существует")
+            model.addAttribute("user", body)
+
+            return "reg"
         }
 
         val user: User = User(body.username, body.email, encoder.encode(body.password))
 
         val role: Optional<Role> = roleRepository.findByName("USER")
         if (role.isEmpty) {
-            return ResponseEntity.badRequest().body(ErrorResponse("Возникли неполадки на сервере"))
+            model.addAttribute("error", "Возникли неполадки на сервере")
+            model.addAttribute("user", body)
+
+            return "reg"
         }
 
         user.roles = listOf(role.get())
         userRepository.saveAndFlush(user)
 
-        return ResponseEntity.ok(RegResponse(generateJwt(user)))
+        return "redirect:/"
     }
 
     @GetMapping("/login")
     fun getLogin(): String {
         return "login"
-    }
-
-    @PostMapping("/login")
-    fun postLogin(@Valid @RequestBody body: LoginRequest): ResponseEntity<*> {
-        return ResponseEntity.ok(RegResponse("qwertyuiopasdfghjklzxcvbnm"))
-    }
-
-    @Throws(Exception::class) private fun validFields(user: User) {}
-
-    private fun generateJwt(user: User): String {
-        val authentication: Authentication =
-                authenticationManager.authenticate(
-                        UsernamePasswordAuthenticationToken(user.username, user.password))
-
-        SecurityContextHolder.getContext().setAuthentication(authentication)
-        return jwtUtils.generateJwtToken(authentication)
     }
 }

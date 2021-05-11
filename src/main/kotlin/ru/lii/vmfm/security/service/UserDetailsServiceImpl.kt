@@ -17,10 +17,12 @@ public class UserDetailsServiceImpl : UserDetailsService {
     @Throws(UsernameNotFoundException::class)
     @Transactional
     override fun loadUserByUsername(username: String): UserDetails {
-        val user: Optional<User> = userRepository.findByUsername(username)
+
+        val user: Optional<User> = userRepository.findByUsernameOrEmail(username, username)
 
         if (user.isEmpty) {
-            throw UsernameNotFoundException("User Not Found with username: $username")
+            throw UsernameNotFoundException(
+                    "Пользователь не найден с таким именем или эл. почтой: $username")
         }
 
         return user.get().toUserDetails()

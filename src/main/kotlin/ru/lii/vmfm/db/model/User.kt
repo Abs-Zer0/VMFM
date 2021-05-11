@@ -5,9 +5,10 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import ru.lii.vmfm.security.service.UserDetailsImpl
+//import ru.lii.vmfm.security.service.UserDetailsImpl
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public data class User(
         @Id @GeneratedValue(strategy = GenerationType.AUTO) val id: Long? = 0,
         @Column(name = "username") var username: String? = null,

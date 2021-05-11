@@ -12,27 +12,40 @@
             <div th:replace="shared :: body-vue-appbar" />
             <v-main>
                 <v-container class="pa-auto">
-                    <v-card class="pa-5" ref="form">
+                    <v-form th:action="@{/login}" th:object="${user}" method="POST" v-model="valid"
+                        :lazy-validation="lazy">
+                        <v-card class="pa-5">
                             <v-card-title>Авторизация</v-card-title>
                             <v-divider class="my-6"></v-divider>
+                            <div th:if="${param.error}">
+                                <v-alert text type="error">Неверный имя пользователя или пароль</v-alert>
+                                <v-divider class="my-6"></v-divider>
+                            </div>
+                            <div th:if="${param.logout}">
+                                <v-alert text type="info">Вы вышли из сервиса</v-alert>
+                                <v-divider class="my-6"></v-divider>
+                            </div>
                             <v-card-text>
-                                <v-text-field name="username" label="Введите имя пользователя или эл. почту"
-                                    ref="usernameOrEmail" v-model="username" hint="Как минимум 4 символа" min="4" :counter="50"
-                                    :rules="rules.username">
+                                <v-text-field label="Введите имя пользователя или эл. почту" v-model="username"
+                                    hint="Как минимум 4 символа" min="4" :counter="50" :rules="rules.username">
                                 </v-text-field>
-                                <v-text-field name="password" label="Введите пароль" ref="password"
-                                    v-model="password" hint="Как минимум 8 символов" min="8" counter="50"
-                                    :append-icon="passwdShow ? 'mdi-eye' : 'mdi-eye-off'" :rules="rules.password"
-                                    :type="!passwdShow ? 'password' : 'text'" @click:append="passwdShow = !passwdShow">
+                                <input th:field="*{username}" type="hidden" v-model="username">
+
+                                <v-text-field label="Введите пароль" v-model="password" hint="Как минимум 8 символов"
+                                    min="8" counter="50" :append-icon="passwdShow ? 'mdi-eye' : 'mdi-eye-off'"
+                                    :rules="rules.password" :type="!passwdShow ? 'password' : 'text'"
+                                    @click:append="passwdShow = !passwdShow">
                                 </v-text-field>
+                                <input th:field="*{password}" type="hidden" v-model="password">
                             </v-card-text>
                             <v-divider class="my-6"></v-divider>
                             <v-card-actions>
                                 <v-btn href="/">Домашняя страница</v-btn>
                                 <v-spacer></v-spacer>
-                                <v-btn color="primary" @click="submit">Войти</v-btn>
+                                <v-btn color="primary" :disabled="!valid" type="submit">Войти</v-btn>
                             </v-card-actions>
-                    </v-card>
+                        </v-card>
+                    </v-form>
                 </v-container>
             </v-main>
         </v-app>
@@ -45,6 +58,8 @@
             vuetify: new Vuetify(),
             data() {
                 return {
+                    valid: true,
+                    lazy: false,
                     username: null,
                     password: null,
                     passwdShow: false,
@@ -60,37 +75,8 @@
                             (val) => (val || '').length <= 50 || 'Максимум 50 символов'
                         ]
                     },
-                    hasError: false
                 }
             },
-            computed: {
-                form() {
-                    return {
-                        usernameOrEmail: this.username,
-                        password: this.password
-                    }
-                }
-            },
-            methods: {
-                submit() {
-                    this.hasError = false
-
-                    Object.keys(this.form).forEach(f => {
-                        if (!this.form[f]) this.hasError = true
-
-                        this.$refs[f].validate(true)
-                    })
-
-                    if (!this.hasError) {
-
-                        axios.create().post("#", this.form)
-                            .then(response => console.log(response.data))
-                            .catch(e => console.log(e))
-                        //window.location = "/wspace/projs"
-                    }
-                }
-            }
-
         })
     </script>
 </body>

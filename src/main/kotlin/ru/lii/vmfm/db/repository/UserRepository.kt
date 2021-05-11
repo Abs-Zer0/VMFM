@@ -16,5 +16,10 @@ interface UserRepository : JpaRepository<User, Long> {
 
     fun findByEmail(@Param("email") email: String): Optional<User>
 
+    fun findByUsernameOrEmail(
+            @Param("username") username: String,
+            @Param("email") email: String
+    ): Optional<User>
+
     @Transactional fun deleteByUsername(@Param("username") username: String)
 }
