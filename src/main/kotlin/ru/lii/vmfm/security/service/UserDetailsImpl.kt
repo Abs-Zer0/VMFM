@@ -5,9 +5,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 public data class UserDetailsImpl(
-        var id: Long? = null,
         var uname: String? = null,
-        var email: String? = null,
         @JsonIgnore var passwd: String? = null,
         var auths: Collection<GrantedAuthority>? = null
 ) : UserDetails {

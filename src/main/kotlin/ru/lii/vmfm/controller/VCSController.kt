@@ -11,12 +11,11 @@ import ru.lii.vmfm.db.model.User
 import ru.lii.vmfm.db.service.UserService
 
 @Controller
-class ProjectsController {
+@RequestMapping("/wspace")
+public class VCSController {
     @Autowired lateinit var users: UserService
 
-    @GetMapping("/wspace") fun workspace(): String = "redirect:/wspace/projs"
-
-    @GetMapping("/wspace/projs")
+    @GetMapping("vcs")
     fun index(model: Model): String {
         val auth: Authentication? = SecurityContextHolder.getContext().getAuthentication()
 
@@ -25,7 +24,7 @@ class ProjectsController {
                 val user: User = users.getByUnameOrEmail(auth.getName()).get()
                 model.addAttribute("user", user)
 
-                return "w-projects"
+                return "w-vcs"
             } catch (e: Exception) {
                 return "redirect:/"
             }

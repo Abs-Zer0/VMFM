@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>VMFM - VCS</title>
+    <div th:replace="shared :: head-vue-style" />
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <div th:replace="shared :: body-vue-appbar-wspace" />
+            <div th:replace="shared :: body-vue-navbar-vcs" />
+            <v-main>
+                <v-container fluid>
+                    <v-expansion-panels>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>
+                                <v-row>
+                                    <v-col cols="8">Github</v-col>
+                                    <v-col cols="4">подключён</v-col>
+                                </v-row>
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <v-btn color="error">Отключить</v-btn>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>
+                                <v-row>
+                                    <v-col cols="8">Gitlab</v-col>
+                                    <v-col cols="4">не подключён</v-col>
+                                </v-row>
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <v-form>
+                                    <v-text-field label="Введите имя пользователя или эл. почту" v-model="username"
+                                        hint="Как минимум 4 символа" min="4" :counter="50" :rules="rules.username">
+                                    </v-text-field>
+                                    <v-text-field label="Введите пароль" v-model="password"
+                                        hint="Как минимум 8 символов" min="8" counter="50"
+                                        :append-icon="passwdShow ? 'mdi-eye' : 'mdi-eye-off'" :rules="rules.password"
+                                        :type="!passwdShow ? 'password' : 'text'"
+                                        @click:append="passwdShow = !passwdShow">
+                                    </v-text-field>
+                                    <v-btn color="primary">Подключить</v-btn>
+                                </v-form>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </v-container>
+            </v-main>
+        </v-app>
+    </div>
+
+    <div th:replace="shared :: body-vue-script" />
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+            data() {
+                return {
+                    selectedItem: 1,
+                    valid: true,
+                    lazy: false,
+                    username: null,
+                    password: null,
+                    passwdShow: false,
+                    rules: {
+                        username: [
+                            (val) => (val || '').length > 0 || 'Необходимое поле',
+                            (val) => (val || '').length >= 4 || 'Минимум 4 символа',
+                            (val) => (val || '').length <= 50 || 'Максимум 50 символов'
+                        ],
+                        password: [
+                            (val) => (val || '').length > 0 || 'Необходимое поле',
+                            (val) => (val || '').length >= 8 || 'Минимум 8 символов',
+                            (val) => (val || '').length <= 50 || 'Максимум 50 символов'
+                        ]
+                    },
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -9,7 +9,7 @@
 <body>
     <div id="app">
         <v-app>
-            <div th:replace="shared :: body-vue-appbar" />
+            <div th:replace="shared :: body-vue-appbar-home" />
             <v-main>
                 <v-container class="pa-auto">
                     <v-form th:action="@{/auth/reg}" th:object="${user}" method="POST" v-model="valid"
@@ -51,6 +51,8 @@
                                 <v-spacer></v-spacer>
                                 <v-btn color="primary" :disabled="!valid" type="submit">Отправить</v-btn>
                             </v-card-actions>
+                            <v-divider class="my-6"></v-divider>
+                            <v-btn color="primary" href="/auth/login">Войти</v-btn>
                         </v-card>
                     </v-form>
                 </v-container>

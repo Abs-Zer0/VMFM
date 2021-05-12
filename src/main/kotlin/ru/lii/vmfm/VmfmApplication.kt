@@ -8,8 +8,7 @@ import ru.lii.vmfm.db.repository.RoleRepository
 import ru.lii.vmfm.db.model.Role
 
 @SpringBootApplication
-class VmfmApplication{
-}
+class VmfmApplication
 
 fun main(args: Array<String>) {
 	runApplication<VmfmApplication>(*args)

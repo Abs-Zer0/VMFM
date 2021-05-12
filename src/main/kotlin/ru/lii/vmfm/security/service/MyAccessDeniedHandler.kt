@@ -32,6 +32,7 @@ public class MyAccessDeniedHandler : AccessDeniedHandler {
                             auth.getName() +
                             "' attempted to access the protected URL: " +
                             httpServletRequest.getRequestURI())
+            logger.info("exception: " + e.localizedMessage)
         }
 
         httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/403")

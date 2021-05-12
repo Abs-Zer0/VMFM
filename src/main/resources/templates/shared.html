@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
     <div th:fragment="head-vue-style">
@@ -12,15 +12,89 @@
 </head>
 
 <body>
-    <div th:fragment="body-vue-appbar">
+    <div th:fragment="body-vue-appbar-home">
         <v-app-bar app>
-
+            <v-btn color="primary" x-large plain tile href="/">Домашняя страница</v-btn>
+            <v-btn sec:authorize="isAuthenticated()" color="secondary" x-large plain tile href="/wspace">Рабочая
+                область</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn sec:authorize="!isAuthenticated()" color="accent" x-large plain tile href="/auth/login">Войти</v-btn>
+            <v-btn sec:authorize="isAuthenticated()" color="accent" x-large plain tile href="/logout">Выйти</v-btn>
         </v-app-bar>
     </div>
 
-    <div th:fragment="body-vue-navbar">
-        <v-navigation-drawer app permanent expand-on-hover>
+    <div th:fragment="body-vue-appbar-wspace">
+        <v-app-bar app>
+            <v-btn color="secondary" x-large plain tile href="/">Домашняя страница</v-btn>
+            <v-btn sec:authorize="isAuthenticated()" color="primary" x-large plain tile href="/wspace">Рабочая
+                область</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn sec:authorize="!isAuthenticated()" color="accent" x-large plain tile href="/auth/login">Войти</v-btn>
+            <v-btn sec:authorize="isAuthenticated()" color="accent" x-large plain tile href="/logout">Выйти</v-btn>
+        </v-app-bar>
+    </div>
 
+    <div th:fragment="body-vue-navbar-projs">
+        <v-navigation-drawer app permanent expand-on-hover>
+            <div sec:authorize="isAuthenticated()">
+                <v-list>
+                    <v-list-item>
+                        <v-list-item-content>
+                            <v-list-item-title th:text="${user.username}" class="title"></v-list-item-title>
+                            <v-list-item-subtitle th:text="${user.email}"></v-list-item-subtitle>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list>
+
+                <v-divider></v-divider>
+
+                <v-list nav dense>
+                    <v-list-item-group v-model="selectedItem" color="primary">
+                        <v-list-item link href="/wspace/projs">
+                            <v-list-item-content>
+                                <v-list-item-title class="title">Проекты</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item link href="/wspace/vcs">
+                            <v-list-item-content>
+                                <v-list-item-title class="title">Системы контроля версий</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list-item-group>
+                </v-list>
+            </div>
+        </v-navigation-drawer>
+    </div>
+
+    <div th:fragment="body-vue-navbar-vcs">
+        <v-navigation-drawer app permanent expand-on-hover>
+            <div sec:authorize="isAuthenticated()">
+                <v-list>
+                    <v-list-item>
+                        <v-list-item-content>
+                            <v-list-item-title th:text="${user.username}" class="title"></v-list-item-title>
+                            <v-list-item-subtitle th:text="${user.email}"></v-list-item-subtitle>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list>
+
+                <v-divider></v-divider>
+
+                <v-list nav dense>
+                    <v-list-item-group v-model="selectedItem" color="primary">
+                        <v-list-item link href="/wspace/projs">
+                            <v-list-item-content>
+                                <v-list-item-title class="title">Проекты</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item link href="/wspace/vcs">
+                            <v-list-item-content>
+                                <v-list-item-title class="title">Системы контроля версий</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list-item-group>
+                </v-list>
+            </div>
         </v-navigation-drawer>
     </div>
 

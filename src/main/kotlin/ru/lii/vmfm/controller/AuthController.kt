@@ -1,24 +1,24 @@
 package ru.lii.vmfm.controller
 
-import java.util.Optional
 import javax.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.MediaType
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import ru.lii.vmfm.db.model.*
 import ru.lii.vmfm.db.repository.*
+import ru.lii.vmfm.db.service.RoleService
+import ru.lii.vmfm.db.service.UserService
 import ru.lii.vmfm.http.request.*
 import ru.lii.vmfm.http.response.*
 
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-    @Autowired lateinit var userRepository: UserRepository
+    @Autowired lateinit var users: UserService
 
-    @Autowired lateinit var roleRepository: RoleRepository
+    @Autowired lateinit var roles: RoleService
 
     @Autowired lateinit var encoder: PasswordEncoder
 
@@ -38,14 +38,14 @@ public class AuthController {
             return "reg"
         }
 
-        if (userRepository.existsByUsername(body.username)) {
+        if (users.existsByUsername(body.username)) {
             model.addAttribute("error", "Пользователь с именем '$body.username' уже существует")
             model.addAttribute("user", body)
 
             return "reg"
         }
 
-        if (userRepository.existsByEmail(body.email)) {
+        if (users.existsByEmail(body.email)) {
             model.addAttribute("error", "Пользователь с эл.почтой '$body.email' уже существует")
             model.addAttribute("user", body)
 
@@ -54,16 +54,17 @@ public class AuthController {
 
         val user: User = User(body.username, body.email, encoder.encode(body.password))
 
-        val role: Optional<Role> = roleRepository.findByName("USER")
-        if (role.isEmpty) {
-            model.addAttribute("error", "Возникли неполадки на сервере")
+        try {
+            val role: Role = roles.getUser()
+            user.roles = listOf(role)
+        } catch (e: Exception) {
+            model.addAttribute("error", e.localizedMessage)
             model.addAttribute("user", body)
 
             return "reg"
         }
 
-        user.roles = listOf(role.get())
-        userRepository.saveAndFlush(user)
+        users.addOrUpdateUser(user)
 
         return "redirect:/"
     }

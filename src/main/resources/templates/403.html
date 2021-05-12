@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>VMFM</title>
+    <title>VMFM - Error</title>
     <div th:replace="shared :: head-vue-style" />
 </head>
 
@@ -12,8 +12,10 @@
             <div th:replace="shared :: body-vue-appbar-home" />
             <v-main>
                 <v-container fluid>
-                    <v-card class="pa-6">
-                        Стартовая страница
+                    <v-card elevation-2>
+                        <p>Войдите, чтобы попасть на эту страницу, или создайте аккаунт, если его у Вас ещё нет.</p>
+                        <v-btn href="/auth/login">Войти</v-btn>
+                        <v-btn href="/auth/reg">Регистрация</v-btn>
                     </v-card>
                 </v-container>
             </v-main>
